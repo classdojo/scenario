@@ -70,12 +70,13 @@ exports.scenario3 = {
 
 ```javascript
 var Scenario = require("scenario");
-var scenario = Scenario.configure({
+var scenario = Scenario().configure({
   dbSettings: "./settings.js",
   fixtures: "./fixtures",
   scenarios: "./scenarios.js"
-});
-scenario.connect({db: "settings"}, function(err){
+})
+
+scenario.connect(function(err){
   this.load("scenario1");
 });
 ```
