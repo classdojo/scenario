@@ -8,24 +8,28 @@ First define a collection of data fixtures.
 
 // fixtures/users.js
 id = require('pow-mongodb-fixtures').createObjectId;
-exports.user1 =
-  _id: id("mongoId1")
-  name: "John
+exports.user1 = {
+  _id: id("mongoId1"),
+  name: "John",
   state: "California"
+}
 
-exports.user2 =
-  _id: id("mongoId2")
-  name: "Sarah"
+exports.user2 = {
+  _id: id("mongoId2"),
+  name: "Sarah",
   state: "Texas"
+}
 
 //fixtures/cars.js
-exports.car1 =
-  type: "Honda"
+exports.car1 = {
+  type: "Honda",
   owner: id("mongoId1")
+}
 
-exports.car2 =
-  type: "Ford"
+exports.car2 = {
+  type: "Ford",
   owner: id("mongoId2")
+}
 
 ```
 
