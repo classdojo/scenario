@@ -1,0 +1,35 @@
+{
+    "name": "scenario",
+    "description": "Loads data scenarios into mongodb",
+    "version": "0.0.0",
+    "homepage": "",
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "author": "Chris Olivares <chris@classdojo.com>",
+    "license": "MIT",
+    "main": "./index.js",
+    "scripts": {
+      "watch" : "coffee -c -w  -o lib src",
+      "test": "make test"
+    },
+    "directories": {
+        "lib": "."
+    },
+    "dependencies": { 
+        "mongoose": "3.6.15",
+        "coffee-script": "1.4.0",
+        "plugin": "0.3.x",
+        "underscore": "1.4.2"
+    },
+    "devDependencies": { 
+        "mocha": "1.7.x",
+        "expect.js": "0.2.0",
+        "pow-mongodb-fixtures": "0.9.0"
+
+    },
+    "engines": {
+        "node": ">=0.6.19"
+    }
+}
