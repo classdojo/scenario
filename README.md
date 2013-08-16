@@ -7,15 +7,14 @@ First define a collection of data fixtures.
 ```javascript
 
 // fixtures/users.js
-id = require('pow-mongodb-fixtures').createObjectId;
 exports.user1 = {
-  _id: id("mongoId1"),
+  _id: "mongoId1",
   name: "John",
   state: "California"
 }
 
 exports.user2 = {
-  _id: id("mongoId2"),
+  _id: "mongoId2",
   name: "Sarah",
   state: "Texas"
 }

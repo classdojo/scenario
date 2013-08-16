@@ -11,7 +11,4 @@ test: test-scenario
 
 test-scenario:
 	NODE_ENV=test ./node_modules/.bin/mocha \
-			--require ./test/common \
-			--reporter $(REPORTER) \
-			--growl \
-			./tests/dojodatabase.js
+			--require ./test/scenario.js
