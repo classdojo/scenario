@@ -67,7 +67,7 @@ exports.scenario3 = {
   users: "user1,user2",
   cars: {
     data: "car1,car2",
-    pre: {
+    $pre: {
       load: function(name, obj, callback) {
         if(name == car1) {
           obj.type = "Ferrari";
