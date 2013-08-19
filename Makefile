@@ -10,5 +10,7 @@ build-watch:
 test: test-scenario
 
 test-scenario:
-	NODE_ENV=test ./node_modules/.bin/mocha \
-			--require ./test/scenario.js
+	@NODE_ENV=test ./node_modules/.bin/mocha \
+			--require "expect.js" \
+			--reporter "dot" \
+			test/scenario.js

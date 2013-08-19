@@ -50,6 +50,12 @@ exports.scenario2 = {
   cars: "car1,car2"
 }
 
+//compose a scenario of other scenarios
+exports.scenario2 = {
+  $scenarios: ["scenario1"],
+  users: "user2"
+}
+
 //load both users and cars, but give user1 a Ferrari.
 exports.scenario3 = {
   users: "user1,user2",
