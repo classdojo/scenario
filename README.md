@@ -14,13 +14,13 @@ First define a collection of data fixtures.
 
 // fixtures/users.js
 exports.user1 = {
-  _id: "mongoId1",
+  _id: "520e934078e3cdd593e4c209",
   name: "John",
   state: "California"
 }
 
 exports.user2 = {
-  _id: "520e934078e3cdd593e4c209",
+  _id: "520e934578e3cdd593e4c20a",
   name: "Sarah",
   state: "Texas"
 }
@@ -38,7 +38,7 @@ exports.car2 = {
   type: "Ford",
   owner: {
     $type: "ObjectID",
-    data: "520e934078e3cdd593e4c209"
+    data: "520e934578e3cdd593e4c20a"
   }
 }
 
