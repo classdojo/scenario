@@ -20,7 +20,7 @@ exports.user1 = {
 }
 
 exports.user2 = {
-  _id: "mongoId2",
+  _id: "520e934078e3cdd593e4c209",
   name: "Sarah",
   state: "Texas"
 }
@@ -28,12 +28,18 @@ exports.user2 = {
 //fixtures/cars.js
 exports.car1 = {
   type: "Honda",
-  owner: id("mongoId1")
+  owner: {
+    $type: "ObjectID",
+    data: "520e934078e3cdd593e4c209"
+  }
 }
 
 exports.car2 = {
   type: "Ford",
-  owner: id("mongoId2")
+  owner: {
+    $type: "ObjectID",
+    data: "520e934078e3cdd593e4c209"
+  }
 }
 
 ```

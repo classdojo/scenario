@@ -10,5 +10,8 @@ exports.car1 = {
 exports.car2 = {
   _id: "5211de9de8716642a0000003",
   type: "Ford",
-  owner: "520e934578e3cdd593e4c20a"
+  owner: {
+    $type: "ObjectID",
+    data: "520e934578e3cdd593e4c20a"
+  }
 }
