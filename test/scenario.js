@@ -39,7 +39,8 @@ describe(".connect", function() {
     });
   });
 
-  // it("should do nothing if connect is called twice", function(next) {
+  it("should do nothing if connect is called twice");
+  // , function(next) {
   //   var tscenario = Scenario().configure({
   //     dbSettings: dbSettings.bad,
   //     fixtures: utils.fullPath("./fixtures"),
@@ -73,19 +74,19 @@ describe(".load/unload", function() {
     });
   });
 
-  // it("should cleanup that scenario", function(next) {
-  //   MongoClient.connect(connectionString, function(err, db) {
-  //     scenario.connect(function(err) {
-  //       this.unload('users', function(err) {
-  //         expect(err).to.be(null);
-  //         db.collection('users').count(function(err, count) {
-  //           expect(count).to.be(0);
-  //           next();
-  //         });
-  //       });
-  //     });
-  //   });
-  // });
+  it("should cleanup that scenario", function(next) {
+    MongoClient.connect(connectionString, function(err, db) {
+      scenario.connect(function(err) {
+        this.unload('users', function(err) {
+          expect(err).to.be(null);
+          db.collection('users').count(function(err, count) {
+            expect(count).to.be(0);
+            next();
+          });
+        });
+      });
+    });
+  });
 
 });
 

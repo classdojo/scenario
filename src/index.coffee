@@ -100,8 +100,6 @@ class Scenario
       @__db.save k, docs, (err, docs) =>
         done()
 
-    callback null
-
   _fullPath: (dir) ->
     if dir.match(/^\./)
       return __dirname + "/" + dir
