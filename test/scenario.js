@@ -13,7 +13,7 @@ connectionString = utils.dbString(dbSettings.good);
 var MongoClient = require("mongodb").MongoClient; //setup mongodb driver for data inspection
 
 describe(".connect", function() {
-  //setup scenario
+  //setup scenarioe
 
   it("should properly connect given a valid db configuration file.", function(next) {
     var tscenario = Scenario().configure({
@@ -62,27 +62,30 @@ describe(".load/unload", function() {
         this.load('scenario1', function(err) {
           expect(err).to.be(null);
           db.collection('users').count(function(err, count) {
-            expect(count).to.be(2);
-            next();
+            expect(count).to.be(1);
+            db.collection('cars').count(function(err, count) {
+              expect(count).to.be(1);
+              next();
+            });
           });
         });
       });
     });
   });
 
-  it("should cleanup that scenario", function(next) {
-    MongoClient.connect(connectionString, function(err, db) {
-      scenario.connect(function(err) {
-        this.unload('users', function(err) {
-          expect(err).should.be(null);
-          db.collection('users').count(function(err, count) {
-            expect(count).to.be(0);
-            next();
-          });
-        });
-      });
-    });
-  });
+  // it("should cleanup that scenario", function(next) {
+  //   MongoClient.connect(connectionString, function(err, db) {
+  //     scenario.connect(function(err) {
+  //       this.unload('users', function(err) {
+  //         expect(err).to.be(null);
+  //         db.collection('users').count(function(err, count) {
+  //           expect(count).to.be(0);
+  //           next();
+  //         });
+  //       });
+  //     });
+  //   });
+  // });
 
 });
 
