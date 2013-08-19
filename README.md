@@ -2,20 +2,25 @@
 
 Loads scenarios in a database to make testing complex user data scenarios easier.
 
+
+### Tests
+```bash
+npm test
+```
+
 ### Usage
 First define a collection of data fixtures.
 ```javascript
 
 // fixtures/users.js
-id = require('pow-mongodb-fixtures').createObjectId;
 exports.user1 = {
-  _id: id("mongoId1"),
+  _id: "mongoId1",
   name: "John",
   state: "California"
 }
 
 exports.user2 = {
-  _id: id("mongoId2"),
+  _id: "mongoId2",
   name: "Sarah",
   state: "Texas"
 }
@@ -51,6 +56,12 @@ exports.scenario2 = {
   cars: "car1,car2"
 }
 
+//compose a scenario of other scenarios
+exports.scenario2 = {
+  $scenarios: ["scenario1"],
+  users: "user2"
+}
+
 //load both users and cars, but give user1 a Ferrari.
 exports.scenario3 = {
   users: "user1,user2",
@@ -70,12 +81,13 @@ exports.scenario3 = {
 
 ```javascript
 var Scenario = require("scenario");
-var scenario = Scenario.configure({
+var scenario = Scenario().configure({
   dbSettings: "./settings.js",
   fixtures: "./fixtures",
   scenarios: "./scenarios.js"
-});
-scenario.connect({db: "settings"}, function(err){
+})
+
+scenario.connect(function(err){
   this.load("scenario1");
 });
 ```
