@@ -2,6 +2,12 @@
 
 Loads scenarios in a database to make testing complex user data scenarios easier.
 
+
+### Tests
+```bash
+npm test
+```
+
 ### Usage
 First define a collection of data fixtures.
 ```javascript
