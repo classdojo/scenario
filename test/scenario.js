@@ -113,11 +113,13 @@ describe("test-scenario", function() {
 
   });
 
-  describe("fixtures functionality", function() {
+  describe("factory functionality", function() {
 
     it("should properly template a factory object");
 
     it("should properly modify a decorated factory");
+
+    it("should properly load a multiple factory scenario");
 
   });
 

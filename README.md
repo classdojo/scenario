@@ -94,7 +94,7 @@ scenario.connect(function(err){
 
 
 ### Factory
-You can also export factory fixtures that are templates and use
+You can also export factory fixtures that are templates for produce any number of object instances. Let's define a car factory.
 ```javascript
 exports.factory.car = {
   type: "Ford",
@@ -118,7 +118,7 @@ exports.factory.car = {
 }
 ```
 
-Factories are very flexible and allow you to register any number of transformations a document goes through.  Say for instance we wanted to add a "model" field to each car.
+Factories are very flexible and allow you to register any number of transformations against a specific factory.  Say for instance we wanted to add a "model" field to each car.
 
 ```javascript
 scenario.registerTransformation("car", function(car, callback) {
@@ -128,7 +128,7 @@ scenario.registerTransformation("car", function(car, callback) {
 ```
 Now when the car factory will produce "Mustangs".
 
-If you want to specify a factory in your scenario:
+You can specify a scenario that uses a factory.
 
 ```javascript
 exports.fordMustangs = {
@@ -153,8 +153,8 @@ exports.fordMustangs = {
 }
 ```
 Great. Now the user has two ford mustangs. But what if we wanted to make this more interesting and give
-the user two different kind of Ford cars?  We can do this by registering a transformer that assigns each
-car a random Ford model..
+the user two different kinds of Fords?  We can do this by registering a transformer that assigns each
+car a random Ford model.
 
 ```javascript
 scenario.registerTransformation("car", function(car, callback) {
