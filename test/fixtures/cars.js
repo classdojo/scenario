@@ -12,3 +12,12 @@ exports.car2 = {
   type: "Ford",
   owner: "520e934578e3cdd593e4c20a"
 }
+
+exports.factory.car = {
+  _id: "5211de95e8716642a0000001",
+  type: "Ford",
+  owner: {
+    $ref: "teacher",
+    field: "_id"
+  }
+}

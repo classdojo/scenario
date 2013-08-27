@@ -1,11 +1,15 @@
 utils     = require("../utils")
 Directory = utils.directory
+Walk      = utils.walk
 MongoDb   = require('mongodb')
 ObjectID  = require('mongodb').ObjectID
 _         = require("underscore")
 oWrap     = require("owrap")
+Documents = require("./documents")
+Resolver  = require("./resolver")
 
 class DB
+
   constructor: (@__settings) ->
     @__client = MongoDb.MongoClient
 
@@ -30,24 +34,42 @@ class DB
 class Scenario
 
   constructor: () ->
-    @_config()
+    @__owrap = {}
+    @_configDocumentResolver()
+    @_configScenarioResolver()
+    @__fixtureSteps = {}
+    @__connected = false
     return @
 
-  configure: (@config) ->
-    @__db = new DB(@config.dbSettings)
-    # load fixtures
-    @__fixtures = @_loadFiles(@config.fixtures)
-    # load scenarios
-    @__scenarios = require(@config.scenarios) #@_loadFiles(@config.scenarios)
+  configure: (@__config, callback) ->
+    @__db = new DB(@__config.dbSettings)
+    @__scenarios = require(@__config.scenarios)
+    @_loadFiles @__config.fixtures, (err, @__fixtures) =>
+      if err?
+        callback(err)
+      else
+        @_separateFixturesAndDocuments()
+        @_configScenarioResolver()
+        callback null, {
+          documents: @__documents,
+          factories: @__factories
+        }
 
-    return @
+
 
   ##loader params
   load: (scenario, callback) ->
-    @_loadScenario  @__scenarios[scenario], callback
+    #load fixtures
+    @__resolver.resolve scenario
+    # @_loadScenario  @__scenarios[scenario], callback
 
   unload: (collection, callback) ->
     @__db.remove collection, callback #need to actually unload scenario
+
+  registerFixtureStep: (fixtureName, fn) ->
+    @__factoryDecorators[fixtureName] = 
+        @__factoryDecorators[fixtureName] || []
+    @__factoryDecorators[fixtureName].push fn
 
   connect: (callback) ->
     callback = callback.bind(@)
@@ -59,46 +81,89 @@ class Scenario
           @__connected = true
         callback err
 
-  _config: () ->
-    @__owrap = oWrap()
-    @__owrap.on "field:_id", (val) ->
+  _configScenarioResolver: () ->
+    @__resolver = new Resolver(@__scenarios, @__documents, @__factories, @__factoryDecorators)
+    @__resolver.on 'data', (data) ->
+      #load into database
+      consol.log "Got data from resolver ---", data
+
+
+  _configDocumentResolver: () ->
+    @__owrap.document = oWrap()
+    @__owrap.document.on "field:_id", (val) ->
       if _.isString(val)
         val = ObjectID(val)
       return val
-    @__owrap.on "control:$type", (obj) ->
+    @__owrap.document.on "control:$type", (obj) ->
       if obj.$type.match(/ObjectID/) #only transform ObjectIds for now
         obj = ObjectID(obj.data)
       return obj
-    @__connected = false
 
+  _configScenarioResolver: () ->
+
+
+  ###
+    Separates an object like
+    {
+      users: {
+        user1: {},
+        user2: {},
+        factory: {
+          factory1: {},
+          factory2: {}
+        }
+      }
+    }
+
+    into a documents and factories object.
+  ###
+  _separateFixturesAndDocuments: () ->
+    @__factories = {}
+    @__documents = {}
+    for k,fixtureObj of @__fixtures
+      factories = fixtureObj.factory
+      documents = _.omit fixtureObj, 'factory'
+      _.extend @__factories, factories
+      _.extend @__documents, documents
 
   _resolve: (obj) ->
     @__owrap.resolve(obj)
 
-  _loadFiles: (dir) ->
-    Directory(@_fullPath(dir))
-        .map('name', (n) ->
-          n = n.split('/').pop()
-          return n.split('.').shift()
-        )
-        .load()
+  _loadFiles: (dir, callback) ->
+    @__documents = new Documents(dir)
+        .load callback
 
-  _loadScenario: (scenario, callback) ->
-    #find scenarios
-    if scenario.$scenarios?
-      for s in scenario
-        @_loadScenario s #load each scenario
-    done = _.after Object.keys(_.omit(scenario, '$scenarios')).length, () =>
-      callback null #add error handling
-    for k, fixtures of scenario
-      if not _.isArray(fixtures)
-        fixtures = fixtures.split(',')
-      docs = []
-      for fixture in fixtures
-        data = @__fixtures[k][fixture]
-        docs.push @__owrap.resolve(data)
-      @__db.save k, docs, (err, docs) =>
-        done()
+  # _loadScenario: (scenario, callback) ->
+  #   #find scenarios
+
+  #   finish = () =>
+  #     done = _.after Object.keys(_.omit(scenario, '$scenarios')).length, () =>
+  #       callback null #add error handling
+  #     for k, fixtures of scenario
+  #       #resolve fixture if needed by using a new instance of owrap
+
+  #       data = @_getDataArray k, fixtures
+  #       @__db.save k, data, (err, docs) =>
+  #         done()
+  #   if scenario.$scenarios? and not _.isEmpty(scenario.$scenarios)
+  #     cont = _.after scenario.$scenarios.length, () ->
+  #       finish()
+  #     for s in scenario.$scenarios
+  #       if @__scenarios[s]?
+  #         @_loadScenario @__scenarios[s], cont #load each scenario
+  #       else
+  #         cont()
+  #   else
+  #     finish()
+
+  # _getDataArray: (collection, fixtures) ->
+  #   if not _.isArray(fixtures)
+  #     fixtures = fixtures.split(',')
+  #   docs = []
+  #   for fixture in fixtures
+  #     data = @__fixtures[collection][fixture]
+  #     docs.push @__owrap.resolve(data)
+  #   return docs
 
   _fullPath: (dir) ->
     if dir.match(/^\./)

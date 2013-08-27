@@ -1,5 +1,5 @@
 {
-    "name": "scenario",
+    "name": "test-scenario",
     "description": "Loads data scenarios into mongodb",
     "version": "0.0.0",
     "homepage": "",
@@ -26,7 +26,7 @@
     "devDependencies": { 
         "mocha": "1.7.x",
         "expect.js": "0.2.0",
-        "pow-mongodb-fixtures": "0.9.0"
+        "walk": ""
     },
     "engines": {
         "node": ">=0.6.19"

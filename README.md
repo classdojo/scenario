@@ -91,3 +91,81 @@ scenario.connect(function(err){
   this.load("scenario1");
 });
 ```
+
+
+### Factory
+You can also export factory fixtures that are templates and use
+```javascript
+exports.factory.car = {
+  type: "Ford",
+  owner: {
+    $ref: "user",
+    field: "_id",
+  }
+}
+```
+or if a car has multiple owners in an array
+
+exports.factory.car = {
+  type: "Ford",
+  owner: {
+    $ref: "user",
+    field: "_id",
+    options: {
+      fieldType: Array
+    }
+  }
+}
+```
+
+Factories are very flexible and allow you to register any number of transformations a document goes through.  Say for instance we wanted to add a "model" field to each car.
+
+```javascript
+scenario.registerTransformation("car", function(car, callback) {
+  car.model = "Mustang";
+  callback(null, car);
+});
+```
+Now when the car factory will produce "Mustangs".
+
+If you want to specify a factory in your scenario:
+
+```javascript
+exports.fordMustangs = {
+  $type: "factory",
+  name: "car", //the name of the specific factory
+  options: {
+    required: ["user1"] //an array of fixture document names required to build the object.
+  }
+}
+```
+
+We can also produce multiple cars for this user by including a "num" option.
+
+```javascript
+exports.fordMustangs = {
+  $type: "factory",
+  name: "car", //the name of the specific factory
+  options: {
+    required: ["user1"], //an array of fixture document names required to build the object.
+    num: 2
+  }
+}
+```
+Great. Now the user has two ford mustangs. But what if we wanted to make this more interesting and give
+the user two different kind of Ford cars?  We can do this by registering a transformer that assigns each
+car a random Ford model..
+
+```javascript
+scenario.registerTransformation("car", function(car, callback) {
+  var models = [
+    "Mustang",
+    "GT500"
+  ];
+  car.name = models[Math.floor(Math.random() * 100) % 2];
+  callback(null, car);
+});
+```
+Now user1 will likely have a Mustang and GT500.
+
+If you register multiple transformations against a particular factory, they're run in the order you register them.
